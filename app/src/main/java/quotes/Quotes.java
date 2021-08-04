@@ -13,10 +13,12 @@ public class Quotes {
         this.text=text;
     }
     public ArrayList<String> getTags() {
+
         return tags;
     }
 
     public void setTags(ArrayList<String> tags) {
+
         this.tags = tags;
     }
     public String getAuthor() {

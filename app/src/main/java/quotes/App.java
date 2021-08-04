@@ -3,10 +3,9 @@
  */
 package quotes;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -19,16 +18,36 @@ public class App {
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         try{
-            FileReader jsonFiles =new FileReader("recentquotes.json");
+            URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+            HttpURLConnection connect = (HttpURLConnection) url.openConnection();
+            connect.setRequestMethod("GET");
+            connect.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            int status = connect.getResponseCode();
+            if(status == 200){
+                InputStream input = connect.getInputStream();
+                InputStreamReader inputRead = new InputStreamReader(input);
+                BufferedReader bufRead = new BufferedReader(inputRead);
+                String line = bufRead.readLine();
 
-            ArrayList<Quotes> quotes=jsonFileReading(jsonFiles);
+                System.out.println(line);
 
-            int rand =(int)(Math.random() * (quotes.size()));
+                bufRead.close();
+            } else{
+                System.out.println("locally");
+                FileReader jsonFile = new FileReader("recentquotes.json");
 
-            System.out.println(quotes.get(rand).toString());
+                ArrayList<Quotes> q= jsonFileReading(jsonFile);
+                int rand = (int) (Math.random() * (q.size()));
+                System.out.println(q.get(rand).toString());
+            }
+
+            connect.disconnect();
 
 
-        } catch (FileNotFoundException e) {
+
+
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
