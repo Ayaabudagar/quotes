@@ -36,4 +36,5 @@ class AppTest {
 
         assertEquals("Marilyn Monroe",quotes.get(0).getAuthor());
     }
+
 }
